@@ -40,5 +40,3 @@ def show_character_movies(character)
   films_hash = get_character_movies_from_api(character)
   parse_character_movies(films_hash)
 end
-
-show_character_movies("Han Solo")
