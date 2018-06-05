@@ -2,20 +2,36 @@ require 'rest-client'
 require 'json'
 require 'pry'
 
+# def get_next_page(hash)
+#   url = hash["next"]
+#
+#   all_characters = RestClient.get(url)
+#   character_hash = JSON.parse(all_characters)
+#
+# end
+
 def get_character_movies(character)
-  all_characters = RestClient.get('http://www.swapi.co/api/people/')
-  character_hash = JSON.parse(all_characters)
+  films = []
+  api_link = "http://www.swapi.co/api/people/"
 
-  results = character_hash["results"]
-  results.map do |x|
+  while films.length == 0
+    all_characters = RestClient.get(api_link)
+    character_hash = JSON.parse(all_characters)
 
-    if x["name"] == character
-      films = x["films"]
-      # binding.pry
+    results = character_hash["results"]
+    # p results
+    results.map do |x|
+
+      if character == x["name"]
+        films = x["films"]
+      end
     end
-  end.flatten.compact
+    api_link = character_hash["next"]
+    # p api_link
+  end
+  return films
 end
-# get_character_movies("Darth Vader")
+
 
 def get_character_movies_from_api(character)
   films = get_character_movies(character)
@@ -23,8 +39,6 @@ def get_character_movies_from_api(character)
     all_films = RestClient.get(film)
     movies = JSON.parse(all_films)
   end
-
-
 end
 
 
